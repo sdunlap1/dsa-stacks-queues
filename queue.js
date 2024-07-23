@@ -1,62 +1,40 @@
-/** Node: node for a queue. */
-
-class Node {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
-}
-
-/** Queue: chained-together nodes where you can
- *  remove from the front or add to the back. */
+const LinkedList = require('./linkedlist');
 
 class Queue {
   constructor() {
+    this._list = new LinkedList();
+    this.size = 0;
     this.first = null;
     this.last = null;
-    this.size = 0;
   }
 
   /** enqueue(val): add new value to end of the queue. Returns undefined. */
   enqueue(val) {
-    const newNode = new Node(val);
-    if (!this.first) {
-      this.first = newNode;
-      this.last = newNode;
-    } else {
-      this.last.next = newNode;
-      this.last = newNode;
-    }
-    this.size++;
+    this._list.addToTail(val);
+    this.size = this._list.length;
+    this.first = this._list.head;
+    this.last = this._list.tail;
     return undefined;
   }
 
   /** dequeue(): remove the node from the start of the queue
    * and return its value. Should throw an error if the queue is empty. */
   dequeue() {
-    if (this.isEmpty()) {
-      throw new Error("Queue is empty");
-    }
-    const removedNode = this.first;
-    this.first = this.first.next;
-    this.size--;
-    if (this.isEmpty()) {
-      this.last = null;
-    }
-    return removedNode.val;
+    const value = this._list.removeHead();
+    this.size = this._list.length;
+    this.first = this._list.head;
+    this.last = this._list.tail;
+    return value;
   }
 
   /** peek(): return the value of the first node in the queue. */
   peek() {
-    if (this.isEmpty()) {
-      throw new Error("Queue is empty");
-    }
-    return this.first.val;
+    return this._list.peekHead();
   }
 
   /** isEmpty(): return true if the queue is empty, otherwise false */
   isEmpty() {
-    return this.size === 0;
+    return this._list.isEmpty();
   }
 }
 

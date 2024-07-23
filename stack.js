@@ -1,62 +1,53 @@
-/** Node: node for a stack. */
-
-class Node {
-  constructor(val) {
-    this.val = val;
-    this.next = null;
-  }
-}
-
-/** Stack: chained-together nodes where you can
- *  remove from the top or add to the top. */
+const LinkedList = require('./linkedlist');
 
 class Stack {
   constructor() {
+    this._list = new LinkedList();
+    this.size = 0;
     this.first = null;
     this.last = null;
-    this.size = 0;
   }
 
   /** push(val): add new value to end of the stack. Returns undefined. */
   push(val) {
-    const newNode = new Node(val);
-    if (!this.first) {
-      this.first = newNode;
-      this.last = newNode;
+    const newNode = { val, next: null }; // Directly create the new node object
+    if (!this._list.head) {
+      this._list.head = newNode;
+      this._list.tail = newNode;
     } else {
-      newNode.next = this.first;
-      this.first = newNode;
+      newNode.next = this._list.head;
+      this._list.head = newNode;
     }
-    this.size++;
+    this._list.length++;
+    this.size = this._list.length;
+    this.first = this._list.head;
+    this.last = this._list.tail;
     return undefined;
   }
 
   /** pop(): remove the node from the top of the stack
    * and return its value. Should throw an error if the stack is empty. */
   pop() {
-    if (this.isEmpty()) {
+    if (this._list.length === 0) {
       throw new Error("Stack is empty");
     }
-    const removedNode = this.first;
-    this.first = this.first.next;
-    this.size--;
-    if (this.isEmpty()) {
-      this.last = null;
-    }
+    const removedNode = this._list.head;
+    this._list.head = this._list.head.next;
+    this._list.length--;
+    this.size = this._list.length;
+    this.first = this._list.head;
+    this.last = this._list.tail;
     return removedNode.val;
   }
 
   /** peek(): return the value of the first node in the stack. */
   peek() {
-    if (this.isEmpty()) {
-      throw new Error("Stack is empty");
-    }
-    return this.first.val;
+    return this._list.head.val;
   }
 
   /** isEmpty(): return true if the stack is empty, otherwise false */
   isEmpty() {
-    return this.size === 0;
+    return this._list.isEmpty();
   }
 }
 
